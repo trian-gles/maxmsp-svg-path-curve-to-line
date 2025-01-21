@@ -38,8 +38,26 @@ function calculateBezier(a, b, c, d, t) {
            + (t * t * t) * d;
 }
 
-function parse(...args){
+function string(str_name) {
+	var max_str = new MaxString();
+	max_str.name = str_name; // binds to the Max `string` by name
+	var contents = max_str.stringify(); // read the value of the string
+    parse(contents.split(/[\s,]+/));
+}
 
+function parseBezier(args, cursor, currX, currY, points){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
+    let c = [parseFloat(args[cursor+3]), parseFloat(args[cursor+4])];
+    let d = [parseFloat(args[cursor+5]), parseFloat(args[cursor+6])];
+        
+    bezierPointsExtract(a, b, c, d, reso, points);
+
+    return cursor + 7;
+}
+
+
+function parse(args){
     // STARTING POINT "M x y"
     let currX = parseFloat(args[1]);
     let currY = parseFloat(args[2]);
@@ -49,18 +67,28 @@ function parse(...args){
     let points = [];
 
     while (cursor < args.length){
-        let a = [currX, currY];
-        let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
-        let c = [parseFloat(args[cursor+3]), parseFloat(args[cursor+4])];
-        let d = [parseFloat(args[cursor+5]), parseFloat(args[cursor+6])];
-        
-        bezierPointsExtract(a, b, c, d, reso, points);
+        switch (args[cursor]) {
+            case "C":
+                cursor = parseBezier(args, cursor, currX, currY, points);
+                break;
+            case "c":
+            case "T":
+            case "t":
+            case "Q":
+            case "q":    
+            case "S":
+            case "s":
+            case "A":
+            case "a":
+            case "M":
+            case "m":
+        }
+
         
 
         let lastPoint = points[points.length - 1];
         currX = lastPoint[0];
         currY = lastPoint[1];
-        cursor += 7;
     }
     let xLine = new MaxArray();
     let yLine = new MaxArray();
