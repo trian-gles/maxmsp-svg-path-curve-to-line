@@ -45,33 +45,47 @@ function string(str_name) {
     parse(contents.split(/[\s,]+/));
 }
 
-function parseBezier(args, cursor, currX, currY, points){
+function parseBezierUpper(args, cursor, currX, currY, points){
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     let c = [parseFloat(args[cursor+3]), parseFloat(args[cursor+4])];
-    let d = [parseFloat(args[cursor+5]), parseFloat(args[cursor+6])];
-        
+    let d = [parseFloat(args[cursor+5]), parseFloat(args[cursor+6])]; 
     bezierPointsExtract(a, b, c, d, reso, points);
+    return 7;
+}
 
-    return cursor + 7;
+function parseBezierLower(args, cursor, currX, currY, points){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
+    let c = [parseFloat(args[cursor+3]) + currX, parseFloat(args[cursor+4]) + currY];
+    let d = [parseFloat(args[cursor+5]) + currX, parseFloat(args[cursor+6]) + currY]; 
+    bezierPointsExtract(a, b, c, d, reso, points);
+    return 7;
 }
 
 
 function parse(args){
-    // STARTING POINT "M x y"
+    // STARTING POINT ALWAYS IS "M x y"
     let currX = parseFloat(args[1]);
     let currY = parseFloat(args[2]);
 
-    // LOOP THROUGH ALL CURVES, "C x1 y1 x2 y2 x y"
+    
     let cursor = 3;
     let points = [];
-
     while (cursor < args.length){
         switch (args[cursor]) {
-            case "C":
-                cursor = parseBezier(args, cursor, currX, currY, points);
+            case "C": //CURVE, "C x1 y1 x2 y2 x y"
+                cursor += parseBezierUpper(args, cursor, currX, currY, points);
                 break;
             case "c":
+                cursor += parseBezierLower(args, cursor, currX, currY, points);
+                break;
+            case "L":
+            case "l":
+            case "H":
+            case "h":
+            case "V":
+            case "v":
             case "T":
             case "t":
             case "Q":
