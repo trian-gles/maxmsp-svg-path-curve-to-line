@@ -8,6 +8,11 @@ outlets = 2;
 var timescale = 1;
 declareattribute("timescale", { min: 0, max: 100000, default: 1, type: "float" });
 
+
+
+///
+//  BEZIER
+///
 function bezierPointsExtract(a, b, c, d, reso, points){
     points.push([a[0], a[1], 0]);
 
@@ -31,20 +36,6 @@ function bezierPointsExtract(a, b, c, d, reso, points){
     return points;
 }
 
-function calculateBezier(a, b, c, d, t) {
-    return ((1 - t) * (1 - t) * (1 - t)) * a
-           + 3 * ((1 - t) * (1 - t)) * t * b
-           + 3 * (1 - t) * (t * t) * c
-           + (t * t * t) * d;
-}
-
-function string(str_name) {
-	var max_str = new MaxString();
-	max_str.name = str_name; // binds to the Max `string` by name
-	var contents = max_str.stringify(); // read the value of the string
-    parse(contents.split(/[\s,]+/));
-}
-
 function parseBezierUpper(args, cursor, currX, currY, points){
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
@@ -63,6 +54,58 @@ function parseBezierLower(args, cursor, currX, currY, points){
     return 7;
 }
 
+function calculateBezier(a, b, c, d, t) {
+    return ((1 - t) * (1 - t) * (1 - t)) * a
+           + 3 * ((1 - t) * (1 - t)) * t * b
+           + 3 * (1 - t) * (t * t) * c
+           + (t * t * t) * d;
+}
+
+///
+//  LINE
+///
+
+function linePointExtract(a, b, points){
+    let prevX = a[0];
+    let prevY = a[1];
+    let newX = b[0];
+    let newY = b[1];
+
+    let dx = newX - prevX;
+    let dy = newY - prevY;
+        
+
+    let sliceLength = Math.sqrt(dx * dx + dy * dy) * timescale;
+    points.push([newX, newY, sliceLength]);
+}
+
+function parseLineUpper(args, cursor, currX, currY, points){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
+    linePointExtract(a, b, points);
+    return 3;
+    
+}
+
+function parseLineLower(args, cursor, currX, currY, points){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
+    linePointExtract(a, b, points);
+    return 3;
+    
+}
+
+
+
+function string(str_name) {
+	var max_str = new MaxString();
+	max_str.name = str_name; // binds to the Max `string` by name
+	var contents = max_str.stringify(); // read the value of the string
+    parse(contents.split(/[\s,]+/));
+}
+
+
+
 
 function parse(args){
     // STARTING POINT ALWAYS IS "M x y"
@@ -71,7 +114,7 @@ function parse(args){
 
     
     let cursor = 3;
-    let points = [];
+    let points = [[currX, currY, 0]];
     while (cursor < args.length){
         switch (args[cursor]) {
             case "C": //CURVE, "C x1 y1 x2 y2 x y"
@@ -81,7 +124,11 @@ function parse(args){
                 cursor += parseBezierLower(args, cursor, currX, currY, points);
                 break;
             case "L":
+                cursor += parseLineUpper(args, cursor, currX, currY, points);
+                break;
             case "l":
+                cursor += parseLineLower(args, cursor, currX, currY, points);
+                break;
             case "H":
             case "h":
             case "V":
