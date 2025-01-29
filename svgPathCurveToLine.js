@@ -92,10 +92,36 @@ function parseLineLower(args, cursor, currX, currY, points){
     let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
     linePointExtract(a, b, points);
     return 3;
-    
 }
 
 
+function parseLineVerticalUpper(args, cursor, currX, currY, points){
+    let a = [currX, currY];
+    let b = [currX, parseFloat(args[cursor+1])];
+    linePointExtract(a, b, points);
+    return 2;
+}
+
+function parseLineHorizontalUpper(args, cursor, currX, currY, points){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]), currY];
+    linePointExtract(a, b, points);
+    return 2;
+}
+
+function parseLineVerticalLower(args, cursor, currX, currY, points){
+    let a = [currX, currY];
+    let b = [currX, parseFloat(args[cursor+1]) + currY];
+    linePointExtract(a, b, points);
+    return 2;
+}
+
+function parseLineHorizontalLower(args, cursor, currX, currY, points){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]) + currX, currY];
+    linePointExtract(a, b, points);
+    return 2;
+}
 
 function string(str_name) {
 	var max_str = new MaxString();
@@ -130,9 +156,17 @@ function parse(args){
                 cursor += parseLineLower(args, cursor, currX, currY, points);
                 break;
             case "H":
+                cursor += parseLineHorizontalUpper(args, cursor, currX, currY, points);
+                break;
             case "h":
+                cursor += parseLineHorizontalLower(args, cursor, currX, currY, points);
+                break;
             case "V":
+                cursor += parseLineVerticalUpper(args, cursor, currX, currY, points);
+                break;
             case "v":
+                cursor += parseLineVerticalLower(args, cursor, currX, currY, points);
+                break;
             case "T":
             case "t":
             case "Q":
