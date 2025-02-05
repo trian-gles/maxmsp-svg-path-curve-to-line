@@ -15,7 +15,6 @@ declareattribute("timescale", { min: 0, max: 100000, default: 1, type: "float" }
 ///
 function bezierPointsExtract(a, b, c, d, reso, points){
     points.push([a[0], a[1], 0]);
-
     for (let i=1; i<reso+1; i++){
         let prevX = points[points.length - 1][0];
         let prevY = points[points.length - 1][1];
@@ -36,22 +35,49 @@ function bezierPointsExtract(a, b, c, d, reso, points){
     return points;
 }
 
-function parseBezierUpper(args, cursor, currX, currY, points){
+function parseBezierUpper(args, cursor, currX, currY, points, lastControlPoint){
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     let c = [parseFloat(args[cursor+3]), parseFloat(args[cursor+4])];
-    let d = [parseFloat(args[cursor+5]), parseFloat(args[cursor+6])]; 
+    let d = [parseFloat(args[cursor+5]), parseFloat(args[cursor+6])];
+    lastControlPoint[0] = c[0] * -1;
+    lastControlPoint[1] = c[1] * -1;
     bezierPointsExtract(a, b, c, d, reso, points);
     return 7;
 }
 
-function parseBezierLower(args, cursor, currX, currY, points){
+function parseBezierLower(args, cursor, currX, currY, points, lastControlPoint){
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
     let c = [parseFloat(args[cursor+3]) + currX, parseFloat(args[cursor+4]) + currY];
-    let d = [parseFloat(args[cursor+5]) + currX, parseFloat(args[cursor+6]) + currY]; 
+    let d = [parseFloat(args[cursor+5]) + currX, parseFloat(args[cursor+6]) + currY];
+    lastControlPoint[0] = c[0] * -1;
+    lastControlPoint[1] = c[1] * -1;
     bezierPointsExtract(a, b, c, d, reso, points);
     return 7;
+}
+
+
+function parseBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint){
+    let a = [currX, currY];
+    let b = [...lastControlPoint];
+    let c = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
+    let d = [parseFloat(args[cursor+3]), parseFloat(args[cursor+4])];
+    lastControlPoint[0] = c[0];
+    lastControlPoint[1] = c[1];    
+    bezierPointsExtract(a, b, c, d, reso, points);
+    return 5;
+}
+
+function parseBezierShortLower(args, cursor, currX, currY, points, lastControlPoint){
+    let a = [currX, currY];
+    let b = [...lastControlPoint];
+    let c = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
+    let d = [parseFloat(args[cursor+3]) + currX, parseFloat(args[cursor+4]) + currY];
+    lastControlPoint[0] = c[0];
+    lastControlPoint[1] = c[1];   
+    bezierPointsExtract(a, b, c, d, reso, points);
+    return 5;
 }
 
 function calculateBezier(a, b, c, d, t) {
@@ -141,13 +167,14 @@ function parse(args){
     
     let cursor = 3;
     let points = [[currX, currY, 0]];
+    let lastControlPoint = [0, 0];
     while (cursor < args.length){
         switch (args[cursor]) {
             case "C": //CURVE, "C x1 y1 x2 y2 x y"
-                cursor += parseBezierUpper(args, cursor, currX, currY, points);
+                cursor += parseBezierUpper(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "c":
-                cursor += parseBezierLower(args, cursor, currX, currY, points);
+                cursor += parseBezierLower(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "L":
                 cursor += parseLineUpper(args, cursor, currX, currY, points);
@@ -172,7 +199,11 @@ function parse(args){
             case "Q":
             case "q":    
             case "S":
+                cursor += parseBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint);
+                break;
             case "s":
+                cursor += parseBezierShortLower(args, cursor, currX, currY, points, lastControlPoint);
+                break;
             case "A":
             case "a":
             case "M":
