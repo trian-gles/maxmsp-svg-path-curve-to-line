@@ -57,10 +57,31 @@ function parseBezierLower(args, cursor, currX, currY, points, lastControlPoint){
     return 7;
 }
 
+function parseQuadBezierUpper(args, cursor, currX, currY, points, lastControlPoint){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
+    let c = [...b];
+    let d = [parseFloat(args[cursor+3]), parseFloat(args[cursor+4])];
+    lastControlPoint[0] = c[0] * -1;
+    lastControlPoint[1] = c[1] * -1;
+    bezierPointsExtract(a, b, c, d, reso, points);
+    return 5;
+}
+
+function parseQuadBezierLower(args, cursor, currX, currY, points, lastControlPoint){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
+    let c = [...b];
+    let d = [parseFloat(args[cursor+3]) + currX, parseFloat(args[cursor+4]) + currY];
+    lastControlPoint[0] = c[0] * -1;
+    lastControlPoint[1] = c[1] * -1;
+    bezierPointsExtract(a, b, c, d, reso, points);
+    return 5;
+}
 
 function parseBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint){
     let a = [currX, currY];
-    let b = [...lastControlPoint];
+    let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     let c = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     let d = [parseFloat(args[cursor+3]), parseFloat(args[cursor+4])];
     lastControlPoint[0] = c[0];
@@ -78,6 +99,28 @@ function parseBezierShortLower(args, cursor, currX, currY, points, lastControlPo
     lastControlPoint[1] = c[1];   
     bezierPointsExtract(a, b, c, d, reso, points);
     return 5;
+}
+
+function parseQuadBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint){
+    let a = [currX, currY];
+    let b = [...lastControlPoint];
+    let c = [...b];
+    let d = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
+    lastControlPoint[0] = c[0] * -1;
+    lastControlPoint[1] = c[1] * -1;
+    bezierPointsExtract(a, b, c, d, reso, points);
+    return 3;
+}
+
+function parseQuadBezierShortLower(args, cursor, currX, currY, points, lastControlPoint){
+    let a = [currX, currY];
+    let b = [...lastControlPoint];
+    let c = [...b];
+    let d = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
+    lastControlPoint[0] = c[0] * -1;
+    lastControlPoint[1] = c[1] * -1;
+    bezierPointsExtract(a, b, c, d, reso, points);
+    return 3;
 }
 
 function calculateBezier(a, b, c, d, t) {
@@ -195,9 +238,17 @@ function parse(args){
                 cursor += parseLineVerticalLower(args, cursor, currX, currY, points);
                 break;
             case "T":
+                cursor += parseQuadBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint);
+                break;
             case "t":
+                cursor += parseQuadBezierShortLower(args, cursor, currX, currY, points, lastControlPoint);
+                break;
             case "Q":
+                cursor += parseQuadBezierUpper(args, cursor, currX, currY, points, lastControlPoint);
+                break;
             case "q":    
+                cursor += parseQuadBezierLower(args, cursor, currX, currY, points, lastControlPoint);
+                break;
             case "S":
                 cursor += parseBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint);
                 break;
