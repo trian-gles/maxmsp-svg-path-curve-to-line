@@ -9,6 +9,47 @@ var timescale = 1;
 declareattribute("timescale", { min: 0, max: 100000, default: 1, type: "float" });
 
 
+function string(str_name) {
+	var max_str = new MaxString();
+	max_str.name = str_name; // binds to the Max `string` by name
+	var contents = max_str.stringify(); // read the value of the string
+    parse(contents.split(/[\s,]+/));
+}
+
+/////
+// MOVE
+/////
+
+function movePointExtract(a, b, points){
+    let prevX = a[0];
+    let prevY = a[1];
+    let newX = b[0];
+    let newY = b[1];
+
+    let dx = newX - prevX;
+    let dy = newY - prevY;
+    points.push([0, 0, 0]);
+        
+
+    let sliceLength = Math.sqrt(dx * dx + dy * dy) * timescale;
+    points.push([0, 0, sliceLength]);
+
+    points.push([newX, newY, 0]);
+}
+
+function parseMoveUpper(args, cursor, currX, currY, points, lastControlPoint){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
+    movePointExtract(a, b, points);
+    return 3;
+}
+
+function parseMoveLower(args, cursor, currX, currY, points, lastControlPoint){
+    let a = [currX, currY];
+    let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
+    movePointExtract(a, b, points);
+    return 3;
+}
 
 ///
 //  BEZIER
@@ -192,15 +233,9 @@ function parseLineHorizontalLower(args, cursor, currX, currY, points){
     return 2;
 }
 
-function string(str_name) {
-	var max_str = new MaxString();
-	max_str.name = str_name; // binds to the Max `string` by name
-	var contents = max_str.stringify(); // read the value of the string
-    parse(contents.split(/[\s,]+/));
-}
-
-
-
+//////
+// PARSE
+//////
 
 function parse(args){
     // STARTING POINT ALWAYS IS "M x y"
@@ -258,7 +293,11 @@ function parse(args){
             case "A":
             case "a":
             case "M":
+                cursor += parseMoveUpper(args, cursor, currX, currY, points, lastControlPoint);
+                break;
             case "m":
+                cursor += parseMoveLower(args, cursor, currX, currY, points, lastControlPoint);
+                break;
         }
 
         
