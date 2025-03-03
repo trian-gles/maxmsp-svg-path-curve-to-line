@@ -484,10 +484,16 @@ function parseArcLower(args, cursor, currX, currY, points, lastControlPoint){
 // PARSE
 //////
 
+function anything()
+{
+    var a = arrayfromargs(messagename, arguments);
+    parse(a);
+}
+
 function string(str_name) {
-	var max_str = new MaxString();
-	max_str.name = str_name; 
-	var contents = max_str.stringify(); 
+    var max_str = new MaxString();
+    max_str.name = str_name; 
+    var contents = max_str.stringify(); 
     parse(contents.split(/[\s,]+/));
 }
 
@@ -564,19 +570,20 @@ function parse(args){
         currX = lastPoint[0];
         currY = lastPoint[1];
     }
-    let xLine = new MaxArray();
-    let yLine = new MaxArray();
+    let xLine = [];
+    let yLine = [];
 
 
     points.forEach((item) => {
-        xLine.append(item[0]);
-        xLine.append(item[2]);
-        yLine.append(item[1]);
-        yLine.append(item[2]);
+        xLine.push(item[0]);
+        xLine.push(item[2]);
+        yLine.push(item[1]);
+        yLine.push(item[2]);
     });
-
-    outlet(0, "array", xLine.name);
-    outlet(1, "array", yLine.name);
+    outlet(0, xLine);
+    outlet(1, yLine);
+    // outlet(0, "array", xLine.name);
+    // outlet(1, "array", yLine.name);
 
     
 }
