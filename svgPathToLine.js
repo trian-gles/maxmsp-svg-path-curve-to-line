@@ -48,7 +48,6 @@ function parseMoveLower(args, cursor, currX, currY, points, lastControlPoint){
 //  BEZIER
 ///
 function bezierPointsExtract(a, b, c, d, reso, points){
-    points.push([a[0], a[1], 0]);
     for (let i=1; i<reso+1; i++){
         let prevX = points[points.length - 1][0];
         let prevY = points[points.length - 1][1];
