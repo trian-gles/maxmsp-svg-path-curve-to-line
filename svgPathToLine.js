@@ -30,7 +30,12 @@ function movePointExtract(a, b, points){
     points.push([newX, newY, 0]);
 }
 
+///
+// MOVE
+///
 function parseMoveUpper(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 3 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     movePointExtract(a, b, points);
@@ -38,6 +43,8 @@ function parseMoveUpper(args, cursor, currX, currY, points, lastControlPoint){
 }
 
 function parseMoveLower(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 3 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
     movePointExtract(a, b, points);
@@ -69,6 +76,9 @@ function bezierPointsExtract(a, b, c, d, reso, points){
 }
 
 function parseBezierUpper(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 7 > args.length)
+        return -1;
+
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     let c = [parseFloat(args[cursor+3]), parseFloat(args[cursor+4])];
@@ -80,6 +90,8 @@ function parseBezierUpper(args, cursor, currX, currY, points, lastControlPoint){
 }
 
 function parseBezierLower(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 7 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
     let c = [parseFloat(args[cursor+3]) + currX, parseFloat(args[cursor+4]) + currY];
@@ -91,6 +103,8 @@ function parseBezierLower(args, cursor, currX, currY, points, lastControlPoint){
 }
 
 function parseQuadBezierUpper(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 5 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     let c = [...b];
@@ -102,6 +116,8 @@ function parseQuadBezierUpper(args, cursor, currX, currY, points, lastControlPoi
 }
 
 function parseQuadBezierLower(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 5 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
     let c = [...b];
@@ -113,6 +129,8 @@ function parseQuadBezierLower(args, cursor, currX, currY, points, lastControlPoi
 }
 
 function parseBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 5 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     let c = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
@@ -124,6 +142,8 @@ function parseBezierShortUpper(args, cursor, currX, currY, points, lastControlPo
 }
 
 function parseBezierShortLower(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 5 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [...lastControlPoint];
     let c = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
@@ -135,6 +155,8 @@ function parseBezierShortLower(args, cursor, currX, currY, points, lastControlPo
 }
 
 function parseQuadBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 3 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [...lastControlPoint];
     let c = [...b];
@@ -146,6 +168,8 @@ function parseQuadBezierShortUpper(args, cursor, currX, currY, points, lastContr
 }
 
 function parseQuadBezierShortLower(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 3 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [...lastControlPoint];
     let c = [...b];
@@ -182,6 +206,8 @@ function linePointExtract(a, b, points){
 }
 
 function parseLineUpper(args, cursor, currX, currY, points){
+    if (cursor + 3 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), parseFloat(args[cursor+2])];
     linePointExtract(a, b, points);
@@ -190,6 +216,8 @@ function parseLineUpper(args, cursor, currX, currY, points){
 }
 
 function parseLineLower(args, cursor, currX, currY, points){
+    if (cursor + 3 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]) + currX, parseFloat(args[cursor+2]) + currY];
     linePointExtract(a, b, points);
@@ -198,6 +226,8 @@ function parseLineLower(args, cursor, currX, currY, points){
 
 
 function parseLineVerticalUpper(args, cursor, currX, currY, points){
+    if (cursor + 2 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [currX, parseFloat(args[cursor+1])];
     linePointExtract(a, b, points);
@@ -205,6 +235,8 @@ function parseLineVerticalUpper(args, cursor, currX, currY, points){
 }
 
 function parseLineHorizontalUpper(args, cursor, currX, currY, points){
+    if (cursor + 2 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]), currY];
     linePointExtract(a, b, points);
@@ -212,6 +244,8 @@ function parseLineHorizontalUpper(args, cursor, currX, currY, points){
 }
 
 function parseLineVerticalLower(args, cursor, currX, currY, points){
+    if (cursor + 2 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [currX, parseFloat(args[cursor+1]) + currY];
     linePointExtract(a, b, points);
@@ -219,6 +253,8 @@ function parseLineVerticalLower(args, cursor, currX, currY, points){
 }
 
 function parseLineHorizontalLower(args, cursor, currX, currY, points){
+    if (cursor + 2 > args.length)
+        return -1;
     let a = [currX, currY];
     let b = [parseFloat(args[cursor+1]) + currX, currY];
     linePointExtract(a, b, points);
@@ -448,6 +484,8 @@ function arcPointsExctract(arcParams, points){
 }
 
 function parseArcUpper(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 8 > args.length)
+        return -1;
     let arcParams = {
       px: currX,
       py: currY,
@@ -464,6 +502,8 @@ function parseArcUpper(args, cursor, currX, currY, points, lastControlPoint){
 }
 
 function parseArcLower(args, cursor, currX, currY, points, lastControlPoint){
+    if (cursor + 8 > args.length)
+        return -1;
     let arcParams = {
       px: currX,
       py: currY,
@@ -498,72 +538,87 @@ function string(str_name) {
 
 function parse(args){
     // STARTING POINT ALWAYS IS "M x y"
+    if (args[0] != "M" || args.length < 3){
+        error("SVG parsing error");
+        return;
+    }
+
+    
     let currX = parseFloat(args[1]);
     let currY = parseFloat(args[2]);
 
     
     let cursor = 3;
+    let cursorAdvance = 0;
     let points = [[currX, currY, 0]];
     let lastControlPoint = [0, 0];
     while (cursor < args.length){
         switch (args[cursor]) {
             case "C": //CURVE, "C x1 y1 x2 y2 x y"
-                cursor += parseBezierUpper(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseBezierUpper(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "c":
-                cursor += parseBezierLower(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseBezierLower(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "L":
-                cursor += parseLineUpper(args, cursor, currX, currY, points);
+                cursorAdvance = parseLineUpper(args, cursor, currX, currY, points);
                 break;
             case "l":
-                cursor += parseLineLower(args, cursor, currX, currY, points);
+                cursorAdvance = parseLineLower(args, cursor, currX, currY, points);
                 break;
             case "H":
-                cursor += parseLineHorizontalUpper(args, cursor, currX, currY, points);
+                cursorAdvance = parseLineHorizontalUpper(args, cursor, currX, currY, points);
                 break;
             case "h":
-                cursor += parseLineHorizontalLower(args, cursor, currX, currY, points);
+                cursorAdvance = parseLineHorizontalLower(args, cursor, currX, currY, points);
                 break;
             case "V":
-                cursor += parseLineVerticalUpper(args, cursor, currX, currY, points);
+                cursorAdvance = parseLineVerticalUpper(args, cursor, currX, currY, points);
                 break;
             case "v":
-                cursor += parseLineVerticalLower(args, cursor, currX, currY, points);
+                cursorAdvance = parseLineVerticalLower(args, cursor, currX, currY, points);
                 break;
             case "T":
-                cursor += parseQuadBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseQuadBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "t":
-                cursor += parseQuadBezierShortLower(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseQuadBezierShortLower(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "Q":
-                cursor += parseQuadBezierUpper(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseQuadBezierUpper(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "q":    
-                cursor += parseQuadBezierLower(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseQuadBezierLower(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "S":
-                cursor += parseBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseBezierShortUpper(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "s":
-                cursor += parseBezierShortLower(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseBezierShortLower(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "A":
-                cursor += parseArcUpper(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseArcUpper(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "a":
-                cursor += parseArcLower(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseArcLower(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "M":
-                cursor += parseMoveUpper(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseMoveUpper(args, cursor, currX, currY, points, lastControlPoint);
                 break;
             case "m":
-                cursor += parseMoveLower(args, cursor, currX, currY, points, lastControlPoint);
+                cursorAdvance = parseMoveLower(args, cursor, currX, currY, points, lastControlPoint);
                 break;
+            default:
+                error("SVG parsing error");
+                return;
         }
 
-        
+        if (cursorAdvance < 0){
+            error("SVG parsing error");
+            return;
+        }
+
+        cursor += cursorAdvance;
 
         let lastPoint = points[points.length - 1];
         currX = lastPoint[0];
@@ -581,8 +636,4 @@ function parse(args){
     });
     outlet(0, xLine);
     outlet(1, yLine);
-    // outlet(0, "array", xLine.name);
-    // outlet(1, "array", yLine.name);
-
-    
 }
